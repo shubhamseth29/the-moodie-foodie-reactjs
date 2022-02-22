@@ -1,6 +1,6 @@
 import { Fragment } from "react";
-import { ReactDOM } from "react-dom";
-import classes from './Modal.modules.css';
+import ReactDOM from "react-dom";
+import classes from './Modal.module.css';
 
 const Backdrop = () => {
     return <div className={classes.backdrop}></div>
