@@ -2,38 +2,53 @@ import { useContext } from 'react';
 import CartContext from '../store/cart-context';
 import Modal from '../UI/Modal';
 import classes from './Cart.module.css';
+import CartItem from './CartItem';
 
 const Cart = (props) => {
 
-    const DUMMY_CART_DATA = [
-        { 
-            id: 'c1', 
-            name: 'Sushi', 
-            amount: 2, 
-            price: 12.99 
-        }
-    ]
 
     const cartCtx = useContext(CartContext);
 
-    const cartList = DUMMY_CART_DATA.map((item) => {
-        return (
-            <li key={item.id}>{item.name}</li>
-        )
-    });
+    const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
+    const hasItems = cartCtx.items.length > 0;
+
+    const cartItemRemoveHandler = (id) => {
+        cartCtx.removeItem(id);
+
+    };
+    const cartItemAddHandler = (item) => {
+        cartCtx.addItem({...item, amount: 1});
+    };
+
+    const cartItems = (
+        <ul className={classes['cart-items']}>
+          {cartCtx.items.map((item) => {
+              console.log(item)
+              return (
+            <CartItem
+              key={item.id}
+              name={item.name}
+              amount={item.amount}
+              price={item.price}
+              onRemove={cartItemRemoveHandler.bind(null, item.id)}
+              onAdd={cartItemAddHandler.bind(null, item)}
+            />
+          )})}
+        </ul>
+      );
     return (
         <Modal>
             <ul className={classes['cart-items']}>
-                {cartList}
+                {cartItems}
             </ul>
 
             <div className={classes.total}>
                 <span>Total Amount</span>
-                <span>35.62</span>
+                <span>{totalAmount}</span>
             </div>
             <div className={classes.actions}>
                 <button className={classes['button--alt']} onClick={()=>{ cartCtx.toggleCart(false)}}>Close</button>
-                <button className={classes.button}>Order</button>
+                {hasItems && <button className={classes.button}>Order</button>}
             </div>
         </Modal>
     )
